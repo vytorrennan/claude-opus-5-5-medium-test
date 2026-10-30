@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alex Rivera — Developer</title>
+  <meta name="description" content="Alex Rivera builds software one block at a time. Full-stack developer, graphics tinkerer, open-source maintainer.">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <p class="loader-title">Generating terrain</p>
+    <div class="loader-bar"><span></span></div>
+    <p class="loader-tip" id="loader-tip">Placing trees…</p>
+  </div>
+
+  <!-- ===================== HERO / SKY ===================== -->
+  <header class="hero" id="top">
+    <canvas id="world" aria-label="Interactive voxel island. Drag to look around, click to mine blocks, right-click to place."></canvas>
+
+    <nav class="topbar">
+      <a class="logo" href="#top"><span class="logo-cube" aria-hidden="true"></span>alex.dev</a>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#builds">Builds</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero-copy">
+      <p class="tag">&gt; player joined the world</p>
+      <h1 class="title"><span>Alex</span><span>Rivera</span></h1>
+      <p class="subtitle"><span id="typed">full-stack developer</span><span class="caret">_</span></p>
+      <div class="xp">
+        <span class="xp-level">27</span>
+        <div class="xp-bar"><span></span></div>
+        <span class="xp-label">8 years of XP</span>
+      </div>
+      <div class="cta">
+        <a class="btn btn-grass" href="#builds">View builds</a>
+        <a class="btn btn-stone" href="#contact">Say hello</a>
+      </div>
+    </div>
+
+    <div class="hud-buttons">
+      <button class="icon-btn" id="night-toggle" aria-pressed="false" title="Toggle day / night (N)"><span class="sun-moon"></span><span class="sr">Toggle night</span></button>
+      <button class="icon-btn" id="regen" title="New world (R)"><span class="seed-icon"></span><span class="sr">Generate a new world</span></button>
+    </div>
+
+    <div class="hud">
+      <p class="hotbar-label" id="hotbar-label"></p>
+      <div class="hotbar" id="hotbar" role="toolbar" aria-label="Block to place"></div>
+      <p class="hint"><kbd>drag</kbd> look &nbsp; <kbd>click</kbd> mine &nbsp; <kbd>right-click</kbd> place &nbsp; <kbd>1–8</kbd> pick block</p>
+    </div>
+
+    <a class="scroll-cue" href="#about" aria-label="Scroll down"><span>dig down</span><i></i></a>
+  </header>
+
+  <main>
+    <!-- ===================== SURFACE ===================== -->
+    <section class="layer layer-surface" id="about" data-y="64" data-layer="Surface">
+      <div class="edge" data-top="grassSide" data-fill="dirt"></div>
+      <div class="wrap about">
+        <div class="panel profile reveal">
+          <canvas class="avatar" id="avatar" width="12" height="12" aria-label="Pixel avatar"></canvas>
+          <div>
+            <p class="eyebrow">Player profile</p>
+            <h2>Hi, I'm Alex.</h2>
+            <p class="class">Class: Full-Stack Developer · Spawn: Lisbon, PT</p>
+          </div>
+          <dl class="stats">
+            <div><dt>Health</dt><dd class="hearts" style="--n:9"></dd></div>
+            <div><dt>Coffee</dt><dd class="meter" style="--v:0.85"></dd></div>
+            <div><dt>Curiosity</dt><dd class="meter" style="--v:1"></dd></div>
+            <div><dt>Patience w/ CSS</dt><dd class="meter" style="--v:0.6"></dd></div>
+          </dl>
+        </div>
+        <div class="panel bio reveal">
+          <p class="eyebrow">Lore</p>
+          <p>I build things for the web — from pixel-perfect interfaces down to the databases that hold them up. I like systems you can reason about, tools that get out of the way, and the moment a messy problem finally clicks into place like the last block of a bridge.</p>
+          <p>Right now I'm a senior engineer at <strong>Northwind Labs</strong>, working on realtime collaboration. Off the clock I write a tiny path tracer, maintain a couple of open-source libraries, and, yes, build far too many things out of cubes.</p>
+          <ul class="facts">
+            <li><span class="dot" style="--c:#7ee787"></span>Currently: shipping multiplayer cursors</li>
+            <li><span class="dot" style="--c:#79c0ff"></span>Learning: GPU compute &amp; WGSL</li>
+            <li><span class="dot" style="--c:#ffa657"></span>Open to: interesting problems, mentoring</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DIRT → STONE ===================== -->
+    <section class="layer layer-stone" id="skills" data-y="32" data-layer="Stone">
+      <div class="edge" data-top="stone" data-fill="stone"></div>
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Inventory</p>
+          <h2>Ores I've mined</h2>
+          <p class="lede">Every skill is a stack — the count is how deep I've dug, out of 64.</p>
+        </header>
+        <div class="inventory panel reveal">
+          <div class="tabs" role="tablist" id="skill-tabs"></div>
+          <div class="inv-body">
+            <div class="slots" id="slots"></div>
+            <aside class="inspect" id="inspect" aria-live="polite"></aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STONE + ORES ===================== -->
+    <section class="layer layer-ores" id="builds" data-y="0" data-layer="Ore veins">
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Builds</p>
+          <h2>Things I've made</h2>
+          <p class="lede">Hover a build to spin its block.</p>
+        </header>
+        <div class="builds" id="builds-grid"></div>
+      </div>
+    </section>
+
+    <!-- ===================== DEEP ===================== -->
+    <section class="layer layer-deep" id="journey" data-y="-32" data-layer="Deepstone">
+      <div class="edge" data-top="deep" data-fill="deep"></div>
+      <div class="wrap">
+        <header class="section-head reveal">
+          <p class="eyebrow">Journey</p>
+          <h2>The mineshaft so far</h2>
+        </header>
+        <ol class="shaft" id="shaft"></ol>
+      </div>
+    </section>
+
+    <!-- ===================== BEDROCK ===================== -->
+    <section class="layer layer-bedrock" id="contact" data-y="-64" data-layer="Bedrock">
+      <div class="edge" data-top="bedrock" data-fill="bedrock"></div>
+      <div class="wrap contact">
+        <div class="panel contact-card reveal">
+          <p class="eyebrow">You reached bedrock</p>
+          <h2>Let's build something.</h2>
+          <p>Have a project, a role, or just a neat idea? My inbox is always open — I usually reply within a day.</p>
+          <div class="contact-actions">
+            <button class="btn btn-gold" id="copy-email" data-email="hello@alexrivera.dev">hello@alexrivera.dev</button>
+            <a class="btn btn-stone" href="mailto:hello@alexrivera.dev">Open mail</a>
+          </div>
+          <ul class="socials">
+            <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://bsky.app/" target="_blank" rel="noopener">Bluesky</a></li>
+            <li><a href="#" download>Résumé.pdf</a></li>
+          </ul>
+        </div>
+      </div>
+      <footer class="footer">
+        <p>© 2026 Alex Rivera · Built block by block · <a href="#top">Back to the surface ↑</a></p>
+      </footer>
+      <div class="lava" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <aside class="depth" id="depth" aria-hidden="true">
+    <div class="depth-track"><i id="depth-marker"></i></div>
+    <p><b id="depth-y">Y 80</b><span id="depth-name">Sky</span></p>
+  </aside>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
